@@ -2,33 +2,28 @@ package ru.job4j.todo.model;
 
 import lombok.*;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
+@Entity
+@Table(name = "tasks")
 @Getter
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(onlyExplicitlyIncluded = true)
+@ToString
 public class Task {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private int id;
 
     @NonNull
     @EqualsAndHashCode.Include
-    @ToString.Include
     private String description;
 
     private LocalDateTime created = LocalDateTime.now();
 
-    @ToString.Include
     private boolean done;
-
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy-EEEE HH:mm:ss");
-
-    @ToString.Include
-    public String created() {
-        return FORMATTER.format(created);
-    }
 }
