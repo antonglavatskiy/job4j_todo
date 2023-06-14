@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -76,11 +77,41 @@ public class HQLTaskRepository implements TaskRepository {
 
     @Override
     public List<Task> findAllDone() {
-        return null;
+        Transaction transaction = null;
+        List<Task> rsl = new ArrayList<>();
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            Query<Task> query = session.createQuery(
+                    "from Task t WHERE t.done = :fDone", Task.class)
+                    .setParameter("fDone", true);
+            rsl = query.list();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            LOGGER.error("Задачи не найдены", e);
+        }
+        return rsl;
     }
 
     @Override
     public List<Task> findAllNew() {
-        return null;
+        Transaction transaction = null;
+        List<Task> rsl = new ArrayList<>();
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            Query<Task> query = session.createQuery(
+                    "from Task t WHERE t.created >= :fCreate", Task.class)
+                    .setParameter("fCreate", LocalDateTime.now().minusHours(3));
+            rsl = query.list();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            LOGGER.error("Задачи не найдены", e);
+        }
+        return rsl;
     }
 }

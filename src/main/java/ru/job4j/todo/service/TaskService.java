@@ -7,4 +7,6 @@ import java.util.List;
 public interface TaskService {
     Task save(Task task);
     List<Task> findAll();
+    List<Task> findAllDone();
+    List<Task> findAllNew();
 }

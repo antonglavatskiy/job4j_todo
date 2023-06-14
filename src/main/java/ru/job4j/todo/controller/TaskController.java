@@ -21,4 +21,16 @@ public class TaskController {
         model.addAttribute("tasks", taskService.findAll());
         return "tasks/list";
     }
+
+    @GetMapping("/done")
+    public String getAllDone(Model model) {
+        model.addAttribute("tasks", taskService.findAllDone());
+        return "tasks/list";
+    }
+
+    @GetMapping("/new")
+    public String getAllNew(Model model) {
+        model.addAttribute("tasks", taskService.findAllNew());
+        return "tasks/list";
+    }
 }
