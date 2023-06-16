@@ -11,4 +11,5 @@ public interface TaskService {
     List<Task> findAllDone();
     List<Task> findAllNew();
     Optional<Task> findById(int id);
+    boolean checkDone(int id);
 }

@@ -40,4 +40,9 @@ public class SimpleTaskService implements TaskService {
     public Optional<Task> findById(int id) {
         return taskRepository.findById(id);
     }
+
+    @Override
+    public boolean checkDone(int id) {
+        return taskRepository.checkDone(id);
+    }
 }

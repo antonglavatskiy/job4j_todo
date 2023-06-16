@@ -72,6 +72,27 @@ public class HQLTaskRepository implements TaskRepository {
     }
 
     @Override
+    public boolean checkDone(int id) {
+        boolean rsl = false;
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            rsl = session.createQuery(
+                    "UPDATE Task t SET t.done = :fDone WHERE t.id = :fId")
+                    .setParameter("fDone", true)
+                    .setParameter("fId", id)
+                    .executeUpdate() > 0;
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            LOGGER.error("Статус не обновлен", e);
+        }
+        return rsl;
+    }
+
+    @Override
     public List<Task> findAll() {
         Transaction transaction = null;
         List<Task> rsl = new ArrayList<>();
@@ -118,7 +139,7 @@ public class HQLTaskRepository implements TaskRepository {
             transaction = session.beginTransaction();
             Query<Task> query = session.createQuery(
                     "from Task t WHERE t.created >= :fCreate", Task.class)
-                    .setParameter("fCreate", LocalDateTime.now().minusHours(3));
+                    .setParameter("fCreate", LocalDateTime.now().minusHours(12));
             rsl = query.list();
             transaction.commit();
         } catch (Exception e) {

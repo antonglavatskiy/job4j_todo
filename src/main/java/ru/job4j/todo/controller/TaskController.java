@@ -58,4 +58,19 @@ public class TaskController {
         return "tasks/one";
     }
 
+    @GetMapping("/check/{id}")
+    public String getCheckDone(Model model, @PathVariable int id) {
+        boolean isUpdate = taskService.checkDone(id);
+        if (!isUpdate) {
+            model.addAttribute("message", "Задача с указанным идентификатором не обновлена");
+            return "errors/404";
+        }
+        Optional<Task> task = taskService.findById(id);
+        if (task.isEmpty()) {
+            model.addAttribute("message", "Задача с указанным идентификатором не найдена");
+            return "errors/404";
+        }
+        model.addAttribute("task", task.get());
+        return "tasks/one";
+    }
 }

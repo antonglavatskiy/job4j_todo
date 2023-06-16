@@ -9,6 +9,7 @@ public interface TaskRepository {
     boolean update(Task task);
     boolean deleteById(int id);
     Optional<Task> findById(int id);
+    boolean checkDone(int id);
     List<Task> findAll();
     List<Task> findAllDone();
     List<Task> findAllNew();
