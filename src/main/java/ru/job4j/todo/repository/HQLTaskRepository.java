@@ -134,7 +134,7 @@ public class HQLTaskRepository implements TaskRepository {
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             Query<Task> query = session.createQuery(
-                    "from Task", Task.class);
+                    "from Task t ORDER BY t.created", Task.class);
             rsl = query.list();
             transaction.commit();
         } catch (Exception e) {
@@ -153,7 +153,7 @@ public class HQLTaskRepository implements TaskRepository {
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             Query<Task> query = session.createQuery(
-                    "from Task t WHERE t.done = :fDone", Task.class)
+                    "from Task t WHERE t.done = :fDone ORDER BY t.created", Task.class)
                     .setParameter("fDone", true);
             rsl = query.list();
             transaction.commit();
@@ -173,7 +173,7 @@ public class HQLTaskRepository implements TaskRepository {
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             Query<Task> query = session.createQuery(
-                    "from Task t WHERE t.created >= :fCreate", Task.class)
+                    "from Task t WHERE t.created >= :fCreate ORDER BY t.created", Task.class)
                     .setParameter("fCreate", LocalDateTime.now().minusHours(12));
             rsl = query.list();
             transaction.commit();
