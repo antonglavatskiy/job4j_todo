@@ -73,4 +73,14 @@ public class TaskController {
         model.addAttribute("task", task.get());
         return "tasks/one";
     }
+
+    @GetMapping("/delete/{id}")
+    public String delete(Model model, @PathVariable int id) {
+        boolean isDeleted = taskService.deleteById(id);
+        if (!isDeleted) {
+            model.addAttribute("message", "Задача с указанным идентификатором не найдена");
+            return "errors/404";
+        }
+        return "redirect:/tasks";
+    }
 }

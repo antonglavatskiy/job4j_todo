@@ -12,4 +12,5 @@ public interface TaskService {
     List<Task> findAllNew();
     Optional<Task> findById(int id);
     boolean checkDone(int id);
+    boolean deleteById(int id);
 }

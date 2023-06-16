@@ -48,7 +48,22 @@ public class HQLTaskRepository implements TaskRepository {
 
     @Override
     public boolean deleteById(int id) {
-        return false;
+        boolean rsl = false;
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            rsl = session.createQuery(
+                            "DELETE Task t WHERE t.id = :fId")
+                    .setParameter("fId", id)
+                    .executeUpdate() > 0;
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            LOGGER.error("Задача не удалена", e);
+        }
+        return rsl;
     }
 
     @Override

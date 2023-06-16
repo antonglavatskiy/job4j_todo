@@ -49,7 +49,7 @@
                                 <div class="col-3" th:if="*{done} == false"><a class="btn btn-success w-100" th:href="@{/tasks/check/{id}(id=*{id})}">Выполнить</a></div>
                                 <div class="col-3" th:if="*{done} == true"><a class="btn btn-secondary w-100" th:href="@{/tasks}">Выполнено</a></div>
                                 <div class="col-6"><a class="btn btn-primary w-100" th:href="@{/tasks}">Редактировать</a></div>
-                                <div class="col-3"><a class="btn btn-danger w-100" th:href="@{/tasks}">Удалить</a></div>
+                                <div class="col-3"><a class="btn btn-danger w-100" th:href="@{/tasks/delete/{id}(id=*{id})}">Удалить</a></div>
                                 </div>
                             </div>
                         </div>
