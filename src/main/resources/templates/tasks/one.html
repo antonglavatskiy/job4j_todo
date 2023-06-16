@@ -32,7 +32,7 @@
                     <input type="hidden" name="id" th:field="*{id}">
                     <div class="mb-3">
                         <label for="description" class="form-label fw-bold" th:text="|Описание задания # | + *{id}"><b></b></label>
-                        <textarea class="form-control" id="description" name="description" rows="10" th:field="*{description}"></textarea>
+                        <textarea class="form-control" id="description" name="description" rows="10" th:field="*{description}" readonly></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="created" class="form-label"><b>Дата создания:</b></label>
@@ -47,8 +47,8 @@
                         <div class="col-12">
                             <div class="row">
                                 <div class="col-3" th:if="*{done} == false"><a class="btn btn-success w-100" th:href="@{/tasks/check/{id}(id=*{id})}">Выполнить</a></div>
-                                <div class="col-3" th:if="*{done} == true"><a class="btn btn-secondary w-100" th:href="@{/tasks}">Выполнено</a></div>
-                                <div class="col-6"><a class="btn btn-primary w-100" th:href="@{/tasks}">Редактировать</a></div>
+                                <div class="col-3" th:if="*{done} == true"><a class="btn btn-secondary w-100" th:href="@{/tasks}">Список</a></div>
+                                <div class="col-6"><a class="btn btn-primary w-100" th:href="@{/tasks/update/{id}(id=*{id})}">Редактировать</a></div>
                                 <div class="col-3"><a class="btn btn-danger w-100" th:href="@{/tasks/delete/{id}(id=*{id})}">Удалить</a></div>
                                 </div>
                             </div>

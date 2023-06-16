@@ -13,4 +13,5 @@ public interface TaskService {
     Optional<Task> findById(int id);
     boolean checkDone(int id);
     boolean deleteById(int id);
+    boolean update(Task task);
 }

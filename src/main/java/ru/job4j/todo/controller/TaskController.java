@@ -83,4 +83,29 @@ public class TaskController {
         }
         return "redirect:/tasks";
     }
+
+    @GetMapping("/update/{id}")
+    public String getUpdatePage(Model model, @PathVariable int id) {
+        Optional<Task> task = taskService.findById(id);
+        if (task.isEmpty()) {
+            model.addAttribute("message", "Задача с указанным идентификатором не найдена");
+            return "errors/404";
+        }
+        model.addAttribute("task", task.get());
+        return "tasks/update";
+    }
+
+    @PostMapping("/update")
+    public String update(@ModelAttribute Task task, Model model) {
+        System.out.println(task.getId());
+        System.out.println(task.getDescription());
+        System.out.println(task.getCreated());
+        System.out.println(task.isDone());
+        boolean isUpdated = taskService.update(task);
+        if (!isUpdated) {
+            model.addAttribute("message", "Задача с указанным идентификатором не найдена");
+            return "errors/404";
+        }
+        return "redirect:/tasks";
+    }
 }
