@@ -5,6 +5,7 @@ import ru.job4j.todo.model.Task;
 import ru.job4j.todo.repository.TaskRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SimpleTaskService implements TaskService {
@@ -33,5 +34,10 @@ public class SimpleTaskService implements TaskService {
     @Override
     public List<Task> findAllNew() {
         return taskRepository.findAllNew();
+    }
+
+    @Override
+    public Optional<Task> findById(int id) {
+        return taskRepository.findById(id);
     }
 }

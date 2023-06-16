@@ -53,7 +53,22 @@ public class HQLTaskRepository implements TaskRepository {
 
     @Override
     public Optional<Task> findById(int id) {
-        return Optional.empty();
+        Transaction transaction = null;
+        Optional<Task> rsl = Optional.empty();
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            Query<Task> query = session.createQuery(
+                            "from Task t WHERE t.id = :fId", Task.class)
+                    .setParameter("fId", id);
+            rsl = query.uniqueResultOptional();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            LOGGER.error("Задача не найдена", e);
+        }
+        return rsl;
     }
 
     @Override

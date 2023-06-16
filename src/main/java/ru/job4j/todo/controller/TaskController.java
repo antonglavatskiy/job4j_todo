@@ -2,12 +2,11 @@ package ru.job4j.todo.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.service.TaskService;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/tasks")
@@ -43,9 +42,20 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Task task, Model model) {
+    public String create(@ModelAttribute Task task) {
         taskService.save(task);
         return "redirect:/tasks";
+    }
+
+    @GetMapping("/{id}")
+    public String getById(Model model, @PathVariable int id) {
+        Optional<Task> task = taskService.findById(id);
+        if (task.isEmpty()) {
+            model.addAttribute("message", "Задача с указанным идентификатором не найдена");
+            return "errors/404";
+        }
+        model.addAttribute("task", task.get());
+        return "tasks/one";
     }
 
 }

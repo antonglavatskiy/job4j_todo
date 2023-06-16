@@ -60,7 +60,9 @@
                     <tbody>
                     <tr th:each="task: ${tasks}">
                         <td class="text-center" th:text="${task.id}" />
-                        <td class="text-left" th:text="${task.description}"></td>
+                        <td class="text-left">
+                            <a th:text="${task.description}" th:href="@{/tasks/{taskId}(taskId=${task.id})}"></a>
+                        </td>
                         <td class="text-center" th:text="${#temporals.format(task.created, 'dd.MM.yyyy HH:mm - EEEE')}" />
                         <td class="text-center">
                         <span th:if="${task.done}">
