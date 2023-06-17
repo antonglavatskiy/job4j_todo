@@ -97,10 +97,6 @@ public class TaskController {
 
     @PostMapping("/update")
     public String update(@ModelAttribute Task task, Model model) {
-        System.out.println(task.getId());
-        System.out.println(task.getDescription());
-        System.out.println(task.getCreated());
-        System.out.println(task.isDone());
         boolean isUpdated = taskService.update(task);
         if (!isUpdated) {
             model.addAttribute("message", "Задача с указанным идентификатором не найдена");
