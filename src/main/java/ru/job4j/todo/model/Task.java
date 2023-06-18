@@ -22,6 +22,8 @@ public class Task {
 
     @NonNull
     @EqualsAndHashCode.Include
+    private String title;
+
     private String description;
 
     private LocalDateTime created = LocalDateTime.now();

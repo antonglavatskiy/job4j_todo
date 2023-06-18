@@ -1,0 +1,3 @@
+ALTER TABLE tasks
+ADD COLUMN IF NOT EXISTS title varchar
+NOT NULL DEFAULT 'task';
