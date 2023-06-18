@@ -117,14 +117,11 @@ class TaskControllerTest {
     public void whenRequestChangeDoneTaskPageThenGetPageWithTask() {
         Task task = mock(Task.class);
         when(taskService.checkDone(any(Integer.class))).thenReturn(true);
-        when(taskService.findById(task.getId())).thenReturn(Optional.of(task));
 
         Model model = new ConcurrentModel();
         String view = taskController.getCheckDone(model, task.getId());
-        Object expected = model.getAttribute("task");
 
-        assertThat(view).isEqualTo("tasks/one");
-        assertThat(expected).isEqualTo(task);
+        assertThat(view).isEqualTo("redirect:/tasks/{id}");
     }
 
     @Test
@@ -132,21 +129,6 @@ class TaskControllerTest {
         Task task = mock(Task.class);
         Exception expectedException = new RuntimeException("Задача с указанным идентификатором не обновлена");
         when(taskService.checkDone(any(Integer.class))).thenReturn(false);
-
-        Model model = new ConcurrentModel();
-        String view = taskController.getCheckDone(model, task.getId());
-        Object actualExceptionMessage = model.getAttribute("message");
-
-        assertThat(view).isEqualTo("errors/404");
-        assertThat(actualExceptionMessage).isEqualTo(expectedException.getMessage());
-    }
-
-    @Test
-    public void whenRequestChangeEmptyTaskPageThenGetErrorPage() {
-        Task task = mock(Task.class);
-        Exception expectedException = new RuntimeException("Задача с указанным идентификатором не найдена");
-        when(taskService.checkDone(any(Integer.class))).thenReturn(true);
-        when(taskService.findById(any(Integer.class))).thenReturn(Optional.empty());
 
         Model model = new ConcurrentModel();
         String view = taskController.getCheckDone(model, task.getId());
