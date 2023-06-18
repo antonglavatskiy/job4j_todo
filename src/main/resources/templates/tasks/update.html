@@ -30,8 +30,6 @@
             <div class="col-6">
                 <form class="mt-3" th:object="${task}" th:action="@{/tasks/update}" method="post">
                     <input type="hidden" name="id" th:field="*{id}">
-                    <input type="hidden" name="created" th:field="*{created}">
-                    <input type="hidden" name="done" th:field="*{done}">
                     <div class="mb-3">
                         <label for="description" class="form-label fw-bold" th:text="|Редактирование задания # | + *{id}"></label>
                         <textarea class="form-control" id="description" name="description" rows="10" th:field="*{description}" placeholder="Опишите задание"></textarea>

@@ -47,15 +47,8 @@ public class HQLTaskRepository implements TaskRepository {
         Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            rsl = session.createQuery(
-                            "UPDATE Task t SET t.description = :fDescription,"
-                                    + " t.created = :fCreated, t.done = :fDone"
-                                    + " WHERE t.id = :fId")
-                    .setParameter("fDescription", task.getDescription())
-                    .setParameter("fCreated", LocalDateTime.now())
-                    .setParameter("fDone", false)
-                    .setParameter("fId", task.getId())
-                    .executeUpdate() > 0;
+            session.update(task);
+            rsl = true;
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
