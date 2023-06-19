@@ -8,8 +8,7 @@ import java.util.Optional;
 public interface TaskService {
     Task save(Task task);
     List<Task> findAll();
-    List<Task> findAllDone();
-    List<Task> findAllNew();
+    List<Task> findAllDone(boolean isDone);
     Optional<Task> findById(int id);
     boolean checkDone(int id);
     boolean deleteById(int id);

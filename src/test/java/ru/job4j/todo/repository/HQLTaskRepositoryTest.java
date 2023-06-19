@@ -56,7 +56,7 @@ class HQLTaskRepositoryTest {
         Task task1 = taskRepository.save(new Task(0, "task1", "description1", creationDate.minusHours(2), true));
         Task task2 = taskRepository.save(new Task(0, "task2", "description2", creationDate.minusHours(1), false));
         Task task3 = taskRepository.save(new Task(0, "task3", "description3", creationDate, false));
-        List<Task> resultNew = taskRepository.findAllNew();
+        List<Task> resultNew = taskRepository.findAllDone(false);
         List<Task> resultAll = taskRepository.findAll();
         assertThat(resultNew).isEqualTo(List.of(task2, task3));
         assertThat(resultAll).isEqualTo(List.of(task1, task2, task3));
@@ -78,7 +78,7 @@ class HQLTaskRepositoryTest {
         Task task2 = taskRepository.save(new Task(0, "task2", "description2", creationDate.plusHours(1), false));
         Task task3 = taskRepository.save(new Task(0, "task3", "description3", creationDate.plusHours(2), false));
         taskRepository.checkDone(task2.getId());
-        List<Task> resultDone = taskRepository.findAllDone();
+        List<Task> resultDone = taskRepository.findAllDone(true);
         List<Task> resultAll = taskRepository.findAll();
         assertThat(resultDone).isEqualTo(List.of(task2));
         assertThat(resultAll).isEqualTo(List.of(task1, task2, task3));

@@ -46,7 +46,7 @@ class TaskControllerTest {
     public void whenRequestTaskListPageThenGetPageWithTasksDone() {
         Task task = mock(Task.class);
         List<Task> expected = List.of(task);
-        when(taskService.findAllDone()).thenReturn(expected);
+        when(taskService.findAllDone(true)).thenReturn(expected);
 
         Model model = new ConcurrentModel();
         String view = taskController.getAllDone(model);
@@ -60,7 +60,7 @@ class TaskControllerTest {
     public void whenRequestTaskListPageThenGetPageWithTasksNew() {
         Task task = mock(Task.class);
         List<Task> expected = List.of(task);
-        when(taskService.findAllNew()).thenReturn(expected);
+        when(taskService.findAllDone(false)).thenReturn(expected);
 
         Model model = new ConcurrentModel();
         String view = taskController.getAllNew(model);

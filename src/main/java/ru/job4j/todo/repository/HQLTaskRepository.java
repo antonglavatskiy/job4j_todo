@@ -139,34 +139,14 @@ public class HQLTaskRepository implements TaskRepository {
     }
 
     @Override
-    public List<Task> findAllDone() {
+    public List<Task> findAllDone(boolean isDone) {
         Transaction transaction = null;
         List<Task> rsl = new ArrayList<>();
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             Query<Task> query = session.createQuery(
                     "from Task t WHERE t.done = :fDone ORDER BY t.created", Task.class)
-                    .setParameter("fDone", true);
-            rsl = query.list();
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            LOGGER.error("Задачи не найдены", e);
-        }
-        return rsl;
-    }
-
-    @Override
-    public List<Task> findAllNew() {
-        Transaction transaction = null;
-        List<Task> rsl = new ArrayList<>();
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            Query<Task> query = session.createQuery(
-                    "from Task t WHERE t.done = :fDone ORDER BY t.created", Task.class)
-                    .setParameter("fDone", false);
+                    .setParameter("fDone", isDone);
             rsl = query.list();
             transaction.commit();
         } catch (Exception e) {
