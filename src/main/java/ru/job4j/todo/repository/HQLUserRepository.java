@@ -6,13 +6,14 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.job4j.todo.model.Task;
+import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class HQLUserRepository implements UserRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HQLUserRepository.class.getName());
