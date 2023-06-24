@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Controller
@@ -35,5 +37,22 @@ public class UserController {
             return "errors/404";
         }
         return "redirect:/index";
+    }
+
+    @GetMapping("/login")
+    public String getLoginPage() {
+        return "users/login";
+    }
+
+    @PostMapping("/login")
+    public String loginUser(@ModelAttribute User user, Model model) {
+        Optional<User> optionalUser = userService.findByLoginAndPassword(
+                user.getLogin(), user.getPassword()
+        );
+        if (optionalUser.isEmpty()) {
+            model.addAttribute("error", "Почта или пароль введены неверно");
+            return "users/login";
+        }
+        return "redirect:/tasks";
     }
 }
