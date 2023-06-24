@@ -33,7 +33,7 @@ class HQLTaskRepositoryTest {
     }
 
     @AfterEach
-    public void clearVacancies() {
+    public void clearTasks() {
         List<Task> tasks = taskRepository.findAll();
         for (Task task : tasks) {
             taskRepository.deleteById(task.getId());
