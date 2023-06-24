@@ -6,8 +6,11 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class HQLUserRepository implements UserRepository {
@@ -55,6 +58,45 @@ public class HQLUserRepository implements UserRepository {
                 transaction.rollback();
             }
             LOGGER.error("Пользователь не найден", e);
+        }
+        return rsl;
+    }
+
+    @Override
+    public boolean deleteById(int id) {
+        boolean rsl = false;
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            rsl = session.createQuery(
+                            "DELETE User u WHERE u.id = :fId")
+                    .setParameter("fId", id)
+                    .executeUpdate() > 0;
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            LOGGER.error("Пользователь не удален", e);
+        }
+        return rsl;
+    }
+
+    @Override
+    public List<User> findAll() {
+        Transaction transaction = null;
+        List<User> rsl = new ArrayList<>();
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            Query<User> query = session.createQuery(
+                    "from User", User.class);
+            rsl = query.list();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            LOGGER.error("Пользователи не найдены", e);
         }
         return rsl;
     }
