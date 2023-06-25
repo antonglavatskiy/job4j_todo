@@ -33,7 +33,7 @@ public class UserController {
         try {
             userService.save(user);
         } catch (Exception e) {
-            model.addAttribute("message", "Пользователь с такой почтой уже существует");
+            model.addAttribute("message", "Пользователь с таким логином уже существует");
             return "errors/404";
         }
         return "redirect:/index";
@@ -45,14 +45,22 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String loginUser(@ModelAttribute User user, Model model) {
+    public String loginUser(@ModelAttribute User user, Model model, HttpServletRequest request) {
         Optional<User> optionalUser = userService.findByLoginAndPassword(
                 user.getLogin(), user.getPassword()
         );
         if (optionalUser.isEmpty()) {
-            model.addAttribute("error", "Почта или пароль введены неверно");
+            model.addAttribute("error", "Логин или пароль введены неверно");
             return "users/login";
         }
+        HttpSession session = request.getSession();
+        session.setAttribute("user", optionalUser.get());
         return "redirect:/tasks";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/users/login";
     }
 }
