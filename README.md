@@ -51,6 +51,7 @@ create database todo_db;
 + **Выполните следующие скрипты из директории** *job4j_todo-main/db/scripts*:
   </br>*001_ddl_create_tasks_table.sql*
   </br>*002_ddl_alter_table_tasks_add_title_column.sql*
+  </br>*003_ddl_create_todo_users_table.sql*
 + **В терминале перейдите в проект**
 + **Запустите проект**
 ``` shell 

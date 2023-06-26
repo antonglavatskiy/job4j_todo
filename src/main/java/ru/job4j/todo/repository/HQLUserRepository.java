@@ -31,8 +31,8 @@ public class HQLUserRepository implements UserRepository {
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             session.save(user);
-            rsl = Optional.of(user);
             transaction.commit();
+            rsl = Optional.of(user);
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
