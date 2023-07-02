@@ -29,7 +29,8 @@ class HQLTaskRepositoryTest {
         SessionFactory sessionFactory = new MetadataSources(registry)
                 .buildMetadata().buildSessionFactory();
 
-        taskRepository = new HQLTaskRepository(sessionFactory);
+        CrudRepository crudRepository = new CrudRepository(sessionFactory);
+        taskRepository = new HQLTaskRepository(crudRepository);
     }
 
     @AfterEach

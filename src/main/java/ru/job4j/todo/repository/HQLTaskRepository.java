@@ -1,9 +1,6 @@
 package ru.job4j.todo.repository;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -11,30 +8,22 @@ import ru.job4j.todo.model.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+@AllArgsConstructor
 @Repository
 public class HQLTaskRepository implements TaskRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HQLTaskRepository.class.getName());
 
-    private final SessionFactory sessionFactory;
-
-    public HQLTaskRepository(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+    private final CrudRepository crudRepository;
 
     @Override
     public Task save(Task task) {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.save(task);
-            transaction.commit();
+        try {
+            crudRepository.run(session -> session.save(task));
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
             LOGGER.error("Задача не сохранена", e);
         }
         return task;
@@ -43,16 +32,10 @@ public class HQLTaskRepository implements TaskRepository {
     @Override
     public boolean update(Task task) {
         boolean rsl = false;
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.update(task);
+        try {
+            crudRepository.run(session -> session.update(task));
             rsl = true;
-            transaction.commit();
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
             LOGGER.error("Задача не обновлена", e);
         }
         return rsl;
@@ -61,18 +44,9 @@ public class HQLTaskRepository implements TaskRepository {
     @Override
     public boolean deleteById(int id) {
         boolean rsl = false;
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            rsl = session.createQuery(
-                            "DELETE Task t WHERE t.id = :fId")
-                    .setParameter("fId", id)
-                    .executeUpdate() > 0;
-            transaction.commit();
+        try {
+            rsl = crudRepository.run("DELETE Task t WHERE t.id = :fId", Map.of("fId", id));
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
             LOGGER.error("Задача не удалена", e);
         }
         return rsl;
@@ -80,19 +54,11 @@ public class HQLTaskRepository implements TaskRepository {
 
     @Override
     public Optional<Task> findById(int id) {
-        Transaction transaction = null;
         Optional<Task> rsl = Optional.empty();
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            Query<Task> query = session.createQuery(
-                            "from Task t WHERE t.id = :fId", Task.class)
-                    .setParameter("fId", id);
-            rsl = query.uniqueResultOptional();
-            transaction.commit();
+        try {
+            rsl = crudRepository.optional("from Task t WHERE t.id = :fId",
+                    Task.class, Map.of("fId", id));
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
             LOGGER.error("Задача не найдена", e);
         }
         return rsl;
@@ -101,19 +67,10 @@ public class HQLTaskRepository implements TaskRepository {
     @Override
     public boolean checkDone(int id) {
         boolean rsl = false;
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            rsl = session.createQuery(
-                    "UPDATE Task t SET t.done = :fDone WHERE t.id = :fId")
-                    .setParameter("fDone", true)
-                    .setParameter("fId", id)
-                    .executeUpdate() > 0;
-            transaction.commit();
+        try {
+            rsl = crudRepository.run("UPDATE Task t SET t.done = true WHERE t.id = :fId",
+                    Map.of("fId", id));
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
             LOGGER.error("Статус не обновлен", e);
         }
         return rsl;
@@ -121,18 +78,10 @@ public class HQLTaskRepository implements TaskRepository {
 
     @Override
     public List<Task> findAll() {
-        Transaction transaction = null;
         List<Task> rsl = new ArrayList<>();
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            Query<Task> query = session.createQuery(
-                    "from Task t ORDER BY t.created", Task.class);
-            rsl = query.list();
-            transaction.commit();
+        try {
+            rsl = crudRepository.query("from Task t ORDER BY t.created", Task.class);
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
             LOGGER.error("Задачи не найдены", e);
         }
         return rsl;
@@ -140,19 +89,11 @@ public class HQLTaskRepository implements TaskRepository {
 
     @Override
     public List<Task> findAllDone(boolean isDone) {
-        Transaction transaction = null;
         List<Task> rsl = new ArrayList<>();
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            Query<Task> query = session.createQuery(
-                    "from Task t WHERE t.done = :fDone ORDER BY t.created", Task.class)
-                    .setParameter("fDone", isDone);
-            rsl = query.list();
-            transaction.commit();
+        try {
+            rsl = crudRepository.query("from Task t WHERE t.done = :fDone ORDER BY t.created",
+                    Task.class, Map.of("fDone", isDone));
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
             LOGGER.error("Задачи не найдены", e);
         }
         return rsl;

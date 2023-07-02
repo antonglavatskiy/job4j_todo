@@ -25,7 +25,8 @@ class HQLUserRepositoryTest {
         SessionFactory sessionFactory = new MetadataSources(registry)
                 .buildMetadata().buildSessionFactory();
 
-        userRepository = new HQLUserRepository(sessionFactory);
+        CrudRepository crudRepository = new CrudRepository(sessionFactory);
+        userRepository = new HQLUserRepository(crudRepository);
     }
 
     @AfterEach
