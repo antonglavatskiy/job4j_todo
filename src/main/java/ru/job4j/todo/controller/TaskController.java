@@ -4,8 +4,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.TaskService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Controller
@@ -42,7 +44,9 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Task task) {
+    public String create(@ModelAttribute Task task, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+        task.setUser(user);
         taskService.save(task);
         return "redirect:/tasks";
     }
@@ -90,7 +94,9 @@ public class TaskController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Task task, Model model) {
+    public String update(@ModelAttribute Task task, Model model, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+        task.setUser(user);
         boolean isUpdated = taskService.update(task);
         if (!isUpdated) {
             model.addAttribute("message", "Задача с указанным идентификатором не найдена");

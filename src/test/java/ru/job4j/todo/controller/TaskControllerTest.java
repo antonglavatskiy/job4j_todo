@@ -2,11 +2,13 @@ package ru.job4j.todo.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.service.TaskService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,10 +23,13 @@ class TaskControllerTest {
 
     private TaskController taskController;
 
+    private HttpServletRequest request;
+
     @BeforeEach
     public void initServices() {
         taskService = mock(TaskService.class);
         taskController = new TaskController(taskService);
+        request = new MockHttpServletRequest();
     }
 
     @Test
@@ -82,7 +87,7 @@ class TaskControllerTest {
         Task task = mock(Task.class);
         when(taskService.save(any())).thenReturn(task);
 
-        String view = taskController.create(task);
+        String view = taskController.create(task, request);
         assertThat(view).isEqualTo("redirect:/tasks");
     }
 
@@ -195,7 +200,7 @@ class TaskControllerTest {
         when(taskService.update(task)).thenReturn(true);
 
         Model model = new ConcurrentModel();
-        String view = taskController.update(task, model);
+        String view = taskController.update(task, model, request);
 
         assertThat(view).isEqualTo("redirect:/tasks");
     }
@@ -207,7 +212,7 @@ class TaskControllerTest {
         when(taskService.update(task)).thenReturn(false);
 
         Model model = new ConcurrentModel();
-        String view = taskController.update(task, model);
+        String view = taskController.update(task, model, request);
         Object actualExceptionMessage = model.getAttribute("message");
 
         assertThat(view).isEqualTo("errors/404");
