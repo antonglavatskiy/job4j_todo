@@ -6,6 +6,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,8 @@ class TaskControllerTest {
 
     private TaskService taskService;
 
+    private PriorityService priorityService;
+
     private TaskController taskController;
 
     private HttpServletRequest request;
@@ -28,7 +31,8 @@ class TaskControllerTest {
     @BeforeEach
     public void initServices() {
         taskService = mock(TaskService.class);
-        taskController = new TaskController(taskService);
+        priorityService = mock(PriorityService.class);
+        taskController = new TaskController(taskService, priorityService);
         request = new MockHttpServletRequest();
     }
 
@@ -77,7 +81,8 @@ class TaskControllerTest {
 
     @Test
     public void whenRequestCreatePageThenGetCreationPage() {
-        String view = taskController.getCreationPage();
+        Model model = new ConcurrentModel();
+        String view = taskController.getCreationPage(model);
 
         assertThat(view).isEqualTo("tasks/create");
     }

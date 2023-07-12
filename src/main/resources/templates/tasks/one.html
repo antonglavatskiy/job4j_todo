@@ -51,6 +51,10 @@
                         <div id="created" name="created" th:text="${#temporals.format(task.created, 'dd.MM.yyyy HH:mm - EEEE')}"></div>
                     </div>
                     <div class="mb-3">
+                        <label for="priority" class="form-label"><b>Приоритет:</b></label>
+                        <div id="priority" name="priority" th:text="*{priority.name}"></div>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label"><b>Статус:</b></label>
                         <div name="done" th:if="*{done} == true">Выполнено</div>
                         <div name="done" th:if="*{done} == false">Не выполнено</div>
