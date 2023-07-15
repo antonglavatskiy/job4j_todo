@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
 
@@ -24,6 +26,8 @@ class TaskControllerTest {
 
     private PriorityService priorityService;
 
+    private CategoryService categoryService;
+
     private TaskController taskController;
 
     private HttpServletRequest request;
@@ -32,7 +36,8 @@ class TaskControllerTest {
     public void initServices() {
         taskService = mock(TaskService.class);
         priorityService = mock(PriorityService.class);
-        taskController = new TaskController(taskService, priorityService);
+        categoryService = mock(CategoryService.class);
+        taskController = new TaskController(taskService, priorityService, categoryService);
         request = new MockHttpServletRequest();
     }
 
@@ -90,9 +95,12 @@ class TaskControllerTest {
     @Test
     public void whenRequestSaveTaskThenGetListTasks() {
         Task task = mock(Task.class);
+        List<String> list = List.of("1");
+
+        when(categoryService.findById(1)).thenReturn(Optional.of(new Category(1, "work")));
         when(taskService.save(any())).thenReturn(task);
 
-        String view = taskController.create(task, request);
+        String view = taskController.create(task, list, request);
         assertThat(view).isEqualTo("redirect:/tasks");
     }
 
@@ -202,10 +210,13 @@ class TaskControllerTest {
     @Test
     public void whenRequestUpdateTaskThenGetListTasks() {
         Task task = mock(Task.class);
+        List<String> list = List.of("1");
+
+        when(categoryService.findById(1)).thenReturn(Optional.of(new Category(1, "work")));
         when(taskService.update(task)).thenReturn(true);
 
         Model model = new ConcurrentModel();
-        String view = taskController.update(task, model, request);
+        String view = taskController.update(task, model, list, request);
 
         assertThat(view).isEqualTo("redirect:/tasks");
     }
@@ -213,11 +224,14 @@ class TaskControllerTest {
     @Test
     public void whenRequestUpdateTaskThenGetErrorPage() {
         Task task = mock(Task.class);
+        List<String> list = List.of("1");
         Exception expectedException = new RuntimeException("Задача с указанным идентификатором не найдена");
+
+        when(categoryService.findById(1)).thenReturn(Optional.of(new Category(1, "work")));
         when(taskService.update(task)).thenReturn(false);
 
         Model model = new ConcurrentModel();
-        String view = taskController.update(task, model, request);
+        String view = taskController.update(task, model, list, request);
         Object actualExceptionMessage = model.getAttribute("message");
 
         assertThat(view).isEqualTo("errors/404");

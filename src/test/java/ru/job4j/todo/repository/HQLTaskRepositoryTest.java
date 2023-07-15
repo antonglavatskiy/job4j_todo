@@ -7,6 +7,7 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
 
@@ -46,12 +47,13 @@ class HQLTaskRepositoryTest {
     public void whenSaveTasksThenGetListAll() {
         LocalDateTime creationDate = now().truncatedTo(ChronoUnit.MINUTES);
         Priority priority = new Priority(1, "urgently", 1);
+        List<Category> categories = List.of(new Category(1, "work"));
         Task task1 = taskRepository.save(new Task(0, "task1", "description1",
-                creationDate.minusHours(2), false, null, priority));
+                creationDate.minusHours(2), false, null, priority, categories));
         Task task2 = taskRepository.save(new Task(0, "task2", "description2",
-                creationDate.minusHours(1), false, null, priority));
+                creationDate.minusHours(1), false, null, priority, categories));
         Task task3 = taskRepository.save(new Task(0, "task3", "description3",
-                creationDate, false, null, priority));
+                creationDate, false, null, priority, categories));
         List<Task> result = taskRepository.findAll();
         assertThat(result).isEqualTo(List.of(task1, task2, task3));
     }
@@ -60,12 +62,13 @@ class HQLTaskRepositoryTest {
     public void whenSaveTasksThenGetListNew() {
         LocalDateTime creationDate = now().truncatedTo(ChronoUnit.MINUTES);
         Priority priority = new Priority(1, "urgently", 1);
+        List<Category> categories = List.of(new Category(1, "work"));
         Task task1 = taskRepository.save(new Task(0, "task1", "description1",
-                creationDate.minusHours(2), true, null, priority));
+                creationDate.minusHours(2), true, null, priority, categories));
         Task task2 = taskRepository.save(new Task(0, "task2", "description2",
-                creationDate.minusHours(1), false, null, priority));
+                creationDate.minusHours(1), false, null, priority, categories));
         Task task3 = taskRepository.save(new Task(0, "task3", "description3",
-                creationDate, false, null, priority));
+                creationDate, false, null, priority, categories));
         List<Task> resultNew = taskRepository.findAllDone(false);
         List<Task> resultAll = taskRepository.findAll();
         assertThat(resultNew).isEqualTo(List.of(task2, task3));
@@ -76,8 +79,9 @@ class HQLTaskRepositoryTest {
     public void whenSaveTaskThenCheckStatus() {
         LocalDateTime creationDate = now().truncatedTo(ChronoUnit.MINUTES);
         Priority priority = new Priority(1, "urgently", 1);
+        List<Category> categories = List.of(new Category(1, "work"));
         Task task = taskRepository.save(new Task(0, "task", "description",
-                creationDate, false, null, priority));
+                creationDate, false, null, priority, categories));
         boolean result = taskRepository.checkDone(task.getId());
         assertThat(result).isTrue();
         assertThat(taskRepository.findAll().get(0).isDone()).isTrue();
@@ -87,12 +91,13 @@ class HQLTaskRepositoryTest {
     public void whenSaveTasksThenGetListDone() {
         LocalDateTime creationDate = now().truncatedTo(ChronoUnit.MINUTES);
         Priority priority = new Priority(1, "urgently", 1);
+        List<Category> categories = List.of(new Category(1, "work"));
         Task task1 = taskRepository.save(new Task(0, "task1", "description1",
-                creationDate, false, null, priority));
+                creationDate, false, null, priority, categories));
         Task task2 = taskRepository.save(new Task(0, "task2", "description2",
-                creationDate.plusHours(1), false, null, priority));
+                creationDate.plusHours(1), false, null, priority, categories));
         Task task3 = taskRepository.save(new Task(0, "task3", "description3",
-                creationDate.plusHours(2), false, null, priority));
+                creationDate.plusHours(2), false, null, priority, categories));
         taskRepository.checkDone(task2.getId());
         List<Task> resultDone = taskRepository.findAllDone(true);
         List<Task> resultAll = taskRepository.findAll();
@@ -104,8 +109,9 @@ class HQLTaskRepositoryTest {
     public void whenSaveTaskThenFindById() {
         LocalDateTime creationDate = now().truncatedTo(ChronoUnit.MINUTES);
         Priority priority = new Priority(1, "urgently", 1);
+        List<Category> categories = List.of(new Category(1, "work"));
         Task task = taskRepository.save(new Task(0, "task", "description",
-                creationDate, false, null, priority));
+                creationDate, false, null, priority, categories));
         Task savedTask = taskRepository.findById(task.getId()).get();
         assertThat(savedTask).usingRecursiveComparison().isEqualTo(task);
     }
@@ -114,8 +120,9 @@ class HQLTaskRepositoryTest {
     public void whenDeleteTaskThenGetEmptyOptional() {
         LocalDateTime creationDate = now().truncatedTo(ChronoUnit.MINUTES);
         Priority priority = new Priority(1, "urgently", 1);
+        List<Category> categories = List.of(new Category(1, "work"));
         Task task = taskRepository.save(new Task(0, "task", "description",
-                creationDate, false, null, priority));
+                creationDate, false, null, priority, categories));
         boolean isDeleted = taskRepository.deleteById(task.getId());
         Optional<Task> savedTask = taskRepository.findById(task.getId());
         assertThat(isDeleted).isTrue();
@@ -125,10 +132,11 @@ class HQLTaskRepositoryTest {
     @Test
     public void whenSaveTaskThenGetUpdated() {
         Priority priority = new Priority(1, "urgently", 1);
+        List<Category> categories = List.of(new Category(1, "work"));
         Task task = taskRepository.save(new Task(0, "task", "description",
-                LocalDateTime.now().minusHours(2), true, null, priority));
+                LocalDateTime.now().minusHours(2), true, null, priority, categories));
         Task updatedTask = new Task(task.getId(), "new task", "new description",
-                LocalDateTime.now(), false, null, priority);
+                LocalDateTime.now(), false, null, priority, categories);
         boolean isUpdated = taskRepository.update(updatedTask);
         Task savedTask = taskRepository.findById(updatedTask.getId()).get();
         assertThat(isUpdated).isTrue();

@@ -43,13 +43,19 @@
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label"><b>Описание задания</b></label>
-                        <textarea class="form-control" id="description" name="description" rows="10" placeholder="Опишите задание"></textarea>
+                        <textarea class="form-control" id="description" name="description" rows="7" placeholder="Опишите задание"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="priority"><b>Выберите приоритет</b></label>
                         <select class="form-control" id="priority" name="priority.id">
                             <option th:each="priority : ${priorities}" th:value="${priority.id}"
                                     th:text="${priority.name}"></option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category"><b>Выберите категорию</b></label>
+                        <select id="category" name="categoryList" class="form-select" multiple aria-label="multiple select" required>
+                            <option th:each="category : ${categories}" th:text="${category.name}" th:value="${category.id}"></option>
                         </select>
                     </div>
                     <div class="mb-3 row">

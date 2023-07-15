@@ -56,7 +56,12 @@ public class HQLTaskRepository implements TaskRepository {
     public Optional<Task> findById(int id) {
         Optional<Task> rsl = Optional.empty();
         try {
-            rsl = crudRepository.optional("from Task t JOIN FETCH t.priority WHERE t.id = :fId",
+            rsl = crudRepository.optional("""
+                            FROM Task t 
+                            LEFT JOIN FETCH t.priority
+                            LEFT JOIN FETCH t.categories
+                            WHERE t.id = :fId
+                            """,
                     Task.class, Map.of("fId", id));
         } catch (Exception e) {
             LOGGER.error("Задача не найдена", e);
@@ -80,7 +85,13 @@ public class HQLTaskRepository implements TaskRepository {
     public List<Task> findAll() {
         List<Task> rsl = new ArrayList<>();
         try {
-            rsl = crudRepository.query("from Task t JOIN FETCH t.priority ORDER BY t.created", Task.class);
+            rsl = crudRepository.query("""
+                      SELECT DISTINCT t
+                      FROM Task t
+                      LEFT JOIN FETCH t.priority
+                      LEFT JOIN FETCH t.categories
+                      ORDER BY t.created
+                      """, Task.class);
         } catch (Exception e) {
             LOGGER.error("Задачи не найдены", e);
         }
@@ -91,7 +102,13 @@ public class HQLTaskRepository implements TaskRepository {
     public List<Task> findAllDone(boolean isDone) {
         List<Task> rsl = new ArrayList<>();
         try {
-            rsl = crudRepository.query("from Task t JOIN FETCH t.priority WHERE t.done = :fDone ORDER BY t.created",
+            rsl = crudRepository.query("""
+                            SELECT DISTINCT t
+                            FROM Task t
+                            LEFT JOIN FETCH t.priority
+                            LEFT JOIN FETCH t.categories
+                            WHERE t.done = :fDone ORDER BY t.created
+                            """,
                     Task.class, Map.of("fDone", isDone));
         } catch (Exception e) {
             LOGGER.error("Задачи не найдены", e);

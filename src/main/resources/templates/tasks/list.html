@@ -59,7 +59,7 @@
                 <table class="table">
                     <thead>
                     <tr class="text-center">
-                        <th scope="col">#</th>
+                        <th scope="col">Категория</th>
                         <th scope="col">Название</th>
                         <th scope="col">Приоритет</th>
                         <th scope="col">Пользователь</th>
@@ -69,7 +69,9 @@
                     </thead>
                     <tbody>
                     <tr class="text-center" th:each="task: ${tasks}">
-                        <td th:text="${task.id}" />
+                        <td>
+                            <span th:each="category: ${task.categories}" th:text="${category.name} + | |"></span>
+                        </td>
                         <td>
                             <a th:text="${task.title}" th:href="@{/tasks/{taskId}(taskId=${task.id})}"></a>
                         </td>
