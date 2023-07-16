@@ -95,9 +95,8 @@ class TaskControllerTest {
     @Test
     public void whenRequestSaveTaskThenGetListTasks() {
         Task task = mock(Task.class);
-        List<String> list = List.of("1");
+        List<Integer> list = List.of(1);
 
-        when(categoryService.findById(1)).thenReturn(Optional.of(new Category(1, "work")));
         when(taskService.save(any())).thenReturn(task);
 
         String view = taskController.create(task, list, request);
@@ -210,9 +209,8 @@ class TaskControllerTest {
     @Test
     public void whenRequestUpdateTaskThenGetListTasks() {
         Task task = mock(Task.class);
-        List<String> list = List.of("1");
+        List<Integer> list = List.of(1);
 
-        when(categoryService.findById(1)).thenReturn(Optional.of(new Category(1, "work")));
         when(taskService.update(task)).thenReturn(true);
 
         Model model = new ConcurrentModel();
@@ -224,10 +222,9 @@ class TaskControllerTest {
     @Test
     public void whenRequestUpdateTaskThenGetErrorPage() {
         Task task = mock(Task.class);
-        List<String> list = List.of("1");
+        List<Integer> list = List.of(1);
         Exception expectedException = new RuntimeException("Задача с указанным идентификатором не найдена");
 
-        when(categoryService.findById(1)).thenReturn(Optional.of(new Category(1, "work")));
         when(taskService.update(task)).thenReturn(false);
 
         Model model = new ConcurrentModel();

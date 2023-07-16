@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Category;
-import ru.job4j.todo.model.Priority;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.CategoryService;
@@ -13,10 +12,7 @@ import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @AllArgsConstructor
 @Controller
@@ -54,23 +50,20 @@ public class TaskController {
         return "tasks/create";
     }
 
-    private List<Category> addCategoriesToList(List<String> list) {
-        List<Category> rsl = new ArrayList<>();
-        for (String categoryId: list) {
-            int id = Integer.parseInt(categoryId);
-            Optional<Category> optionalCategory = categoryService.findById(id);
-            if (optionalCategory.isPresent()) {
-                rsl.add(optionalCategory.get());
-            }
+    private Set<Category> listToSet(List<Integer> list) {
+        Set<Category> rsl = new HashSet<>();
+        List<Category> categoryList = categoryService.findById(list);
+        for (Category category : categoryList) {
+            rsl.add(category);
         }
         return rsl;
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Task task, @RequestParam List<String> categoryList, HttpServletRequest request) {
+    public String create(@ModelAttribute Task task, @RequestParam List<Integer> categoryList, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
         task.setUser(user);
-        task.setCategories(addCategoriesToList(categoryList));
+        task.setCategories(listToSet(categoryList));
         taskService.save(task);
         return "redirect:/tasks";
     }
@@ -120,10 +113,10 @@ public class TaskController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Task task, Model model, @RequestParam List<String> categoryList, HttpServletRequest request) {
+    public String update(@ModelAttribute Task task, Model model, @RequestParam List<Integer> categoryList, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
         task.setUser(user);
-        task.setCategories(addCategoriesToList(categoryList));
+        task.setCategories(listToSet(categoryList));
         boolean isUpdated = taskService.update(task);
         if (!isUpdated) {
             model.addAttribute("message", "Задача с указанным идентификатором не найдена");

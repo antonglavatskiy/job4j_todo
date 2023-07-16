@@ -5,12 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Category;
-import ru.job4j.todo.model.User;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @AllArgsConstructor
 @Repository
@@ -32,11 +28,11 @@ public class HQLCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public Optional<Category> findById(int id) {
-        Optional<Category> rsl = Optional.empty();
+    public List<Category> findById(List<Integer> list) {
+        List<Category> rsl = new ArrayList<>();
         try {
-            rsl = crudRepository.optional("from Category c WHERE c.id = :fId",
-                    Category.class, Map.of("fId", id));
+            rsl = crudRepository.query("from Category c WHERE c.id IN :fId",
+                    Category.class, Map.of("fId", list));
         } catch (Exception e) {
             LOGGER.error("Категория не найдена", e);
         }

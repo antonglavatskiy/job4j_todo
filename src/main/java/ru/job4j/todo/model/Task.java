@@ -1,13 +1,11 @@
 package ru.job4j.todo.model;
 
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "tasks")
@@ -46,5 +44,5 @@ public class Task {
     @JoinTable(name = "task_category",
             joinColumns = @JoinColumn(name = "task_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private List<Category> categories = new ArrayList<>();
+    private Set<Category> categories = new HashSet<>();
 }

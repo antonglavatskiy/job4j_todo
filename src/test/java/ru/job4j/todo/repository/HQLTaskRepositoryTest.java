@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Optional.empty;
@@ -47,7 +48,7 @@ class HQLTaskRepositoryTest {
     public void whenSaveTasksThenGetListAll() {
         LocalDateTime creationDate = now().truncatedTo(ChronoUnit.MINUTES);
         Priority priority = new Priority(1, "urgently", 1);
-        List<Category> categories = List.of(new Category(1, "work"));
+        Set<Category> categories = Set.of(new Category(1, "work"));
         Task task1 = taskRepository.save(new Task(0, "task1", "description1",
                 creationDate.minusHours(2), false, null, priority, categories));
         Task task2 = taskRepository.save(new Task(0, "task2", "description2",
@@ -62,7 +63,7 @@ class HQLTaskRepositoryTest {
     public void whenSaveTasksThenGetListNew() {
         LocalDateTime creationDate = now().truncatedTo(ChronoUnit.MINUTES);
         Priority priority = new Priority(1, "urgently", 1);
-        List<Category> categories = List.of(new Category(1, "work"));
+        Set<Category> categories = Set.of(new Category(1, "work"));
         Task task1 = taskRepository.save(new Task(0, "task1", "description1",
                 creationDate.minusHours(2), true, null, priority, categories));
         Task task2 = taskRepository.save(new Task(0, "task2", "description2",
@@ -79,7 +80,7 @@ class HQLTaskRepositoryTest {
     public void whenSaveTaskThenCheckStatus() {
         LocalDateTime creationDate = now().truncatedTo(ChronoUnit.MINUTES);
         Priority priority = new Priority(1, "urgently", 1);
-        List<Category> categories = List.of(new Category(1, "work"));
+        Set<Category> categories = Set.of(new Category(1, "work"));
         Task task = taskRepository.save(new Task(0, "task", "description",
                 creationDate, false, null, priority, categories));
         boolean result = taskRepository.checkDone(task.getId());
@@ -91,7 +92,7 @@ class HQLTaskRepositoryTest {
     public void whenSaveTasksThenGetListDone() {
         LocalDateTime creationDate = now().truncatedTo(ChronoUnit.MINUTES);
         Priority priority = new Priority(1, "urgently", 1);
-        List<Category> categories = List.of(new Category(1, "work"));
+        Set<Category> categories = Set.of(new Category(1, "work"));
         Task task1 = taskRepository.save(new Task(0, "task1", "description1",
                 creationDate, false, null, priority, categories));
         Task task2 = taskRepository.save(new Task(0, "task2", "description2",
@@ -109,7 +110,7 @@ class HQLTaskRepositoryTest {
     public void whenSaveTaskThenFindById() {
         LocalDateTime creationDate = now().truncatedTo(ChronoUnit.MINUTES);
         Priority priority = new Priority(1, "urgently", 1);
-        List<Category> categories = List.of(new Category(1, "work"));
+        Set<Category> categories = Set.of(new Category(1, "work"));
         Task task = taskRepository.save(new Task(0, "task", "description",
                 creationDate, false, null, priority, categories));
         Task savedTask = taskRepository.findById(task.getId()).get();
@@ -120,7 +121,7 @@ class HQLTaskRepositoryTest {
     public void whenDeleteTaskThenGetEmptyOptional() {
         LocalDateTime creationDate = now().truncatedTo(ChronoUnit.MINUTES);
         Priority priority = new Priority(1, "urgently", 1);
-        List<Category> categories = List.of(new Category(1, "work"));
+        Set<Category> categories = Set.of(new Category(1, "work"));
         Task task = taskRepository.save(new Task(0, "task", "description",
                 creationDate, false, null, priority, categories));
         boolean isDeleted = taskRepository.deleteById(task.getId());
@@ -132,7 +133,7 @@ class HQLTaskRepositoryTest {
     @Test
     public void whenSaveTaskThenGetUpdated() {
         Priority priority = new Priority(1, "urgently", 1);
-        List<Category> categories = List.of(new Category(1, "work"));
+        Set<Category> categories = Set.of(new Category(1, "work"));
         Task task = taskRepository.save(new Task(0, "task", "description",
                 LocalDateTime.now().minusHours(2), true, null, priority, categories));
         Task updatedTask = new Task(task.getId(), "new task", "new description",
