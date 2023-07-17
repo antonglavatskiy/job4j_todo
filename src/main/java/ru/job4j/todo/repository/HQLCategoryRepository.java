@@ -28,7 +28,7 @@ public class HQLCategoryRepository implements CategoryRepository {
     }
 
     @Override
-    public List<Category> findById(List<Integer> list) {
+    public Set<Category> findByIds(List<Integer> list) {
         List<Category> rsl = new ArrayList<>();
         try {
             rsl = crudRepository.query("from Category c WHERE c.id IN :fId",
@@ -36,7 +36,7 @@ public class HQLCategoryRepository implements CategoryRepository {
         } catch (Exception e) {
             LOGGER.error("Категория не найдена", e);
         }
-        return rsl;
+        return new HashSet<>(rsl);
     }
 
 }

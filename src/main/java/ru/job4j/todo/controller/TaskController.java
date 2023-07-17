@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.CategoryService;
@@ -50,20 +49,11 @@ public class TaskController {
         return "tasks/create";
     }
 
-    private Set<Category> listToSet(List<Integer> list) {
-        Set<Category> rsl = new HashSet<>();
-        List<Category> categoryList = categoryService.findById(list);
-        for (Category category : categoryList) {
-            rsl.add(category);
-        }
-        return rsl;
-    }
-
     @PostMapping("/create")
     public String create(@ModelAttribute Task task, @RequestParam List<Integer> categoryList, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
         task.setUser(user);
-        task.setCategories(listToSet(categoryList));
+        task.setCategories(categoryService.findByIds(categoryList));
         taskService.save(task);
         return "redirect:/tasks";
     }
@@ -116,7 +106,7 @@ public class TaskController {
     public String update(@ModelAttribute Task task, Model model, @RequestParam List<Integer> categoryList, HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
         task.setUser(user);
-        task.setCategories(listToSet(categoryList));
+        task.setCategories(categoryService.findByIds(categoryList));
         boolean isUpdated = taskService.update(task);
         if (!isUpdated) {
             model.addAttribute("message", "Задача с указанным идентификатором не найдена");
