@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.ui.ConcurrentModel;
+import org.springframework.ui.Model;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.UserService;
 
@@ -33,13 +34,14 @@ class UserControllerTest {
 
     @Test
     public void whenGetRegistrationPage() {
-        var view = userController.getRegistationPage();
+        var model = new ConcurrentModel();
+        var view = userController.getRegistationPage(model);
         assertThat(view).isEqualTo("users/register");
     }
 
     @Test
     public void whenRegisterUserThenRedirectIndexPage() {
-        var user = new User(1, "name", "login", "pass");
+        var user = new User(1, "name", "login", "pass", "UTC");
         when(userService.save(any())).thenReturn(Optional.of(user));
 
         var model = new ConcurrentModel();
@@ -56,7 +58,7 @@ class UserControllerTest {
 
     @Test
     public void whenLoginUserThenRedirectTasksPage() {
-        var user = new User(1, "name", "login", "pass");
+        var user = new User(1, "name", "login", "pass", "UTC");
         when(userService.findByLoginAndPassword(any(), any())).thenReturn(Optional.of(user));
 
         var model = new ConcurrentModel();
@@ -67,7 +69,7 @@ class UserControllerTest {
 
     @Test
     public void whenLoginUserThenRedirectMessagePage() {
-        var user = new User(1, "name", "login", "pass");
+        var user = new User(1, "name", "login", "pass", "UTC");
         var expectedException = new RuntimeException("Логин или пароль введены неверно");
         when(userService.findByLoginAndPassword(user.getLogin(), user.getPassword())).thenReturn(Optional.empty());
 

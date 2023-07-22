@@ -48,6 +48,16 @@
                         <label for="password" class="form-label"><b>Пароль</b></label>
                         <input type="password" class="form-control" id="password" name="password" placeholder="Введите пароль" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="timezone" class="form-label"><b>Часовой пояс</b></label>
+                        <select id="timezone" name="timezone" class="form-control">
+                            <option th:each="zone : ${timezones}"
+                                    th:text="${zone.getID() + ' : ' + zone.getDisplayName()}"
+                                    th:value="${zone.getID()}"
+                                    th:selected="${zone.getID() == 'W-SU'}">
+                            </option>
+                        </select>
+                    </div>
                     <div class="mb-3 row">
                         <div class="col-6"></div>
                         <div class="col-6">

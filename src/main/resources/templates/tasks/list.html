@@ -77,7 +77,7 @@
                         </td>
                         <td th:text="${task.priority.name}" />
                         <td th:text="${task.user.name}" />
-                        <td th:text="${#temporals.format(task.created, 'dd.MM.yyyy HH:mm - EEEE')}" />
+                        <td th:text="${#temporals.format(task.created.atZone(zone), 'dd.MM.yyyy HH:mm O')}" />
                         <td>
                         <span th:if="${task.done}">
                                 <i class="bi bi-check-square"></i>

@@ -11,6 +11,9 @@ import ru.job4j.todo.service.PriorityService;
 import ru.job4j.todo.service.TaskService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 @AllArgsConstructor
@@ -24,21 +27,42 @@ public class TaskController {
 
     private final CategoryService categoryService;
 
+    private void setTime(Task task, User user) {
+        String zoneId = user.getTimezone();
+        ZoneId defTz = TimeZone.getDefault().toZoneId();
+        LocalDateTime created = ZonedDateTime.of(task.getCreated(), defTz)
+                .withZoneSameInstant(ZoneId.of(zoneId))
+                .toLocalDateTime();
+        task.setCreated(created);
+    }
+
     @GetMapping
-    public String getAll(Model model) {
-        model.addAttribute("tasks", taskService.findAll());
+    public String getAll(Model model, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+        List<Task> tasks = taskService.findAll();
+        tasks.forEach(task -> setTime(task, user));
+        model.addAttribute("tasks", tasks);
+        model.addAttribute("zone", ZoneId.of(user.getTimezone()));
         return "tasks/list";
     }
 
     @GetMapping("/done")
-    public String getAllDone(Model model) {
-        model.addAttribute("tasks", taskService.findAllDone(true));
+    public String getAllDone(Model model, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+        List<Task> tasks = taskService.findAllDone(true);
+        tasks.forEach(task -> setTime(task, user));
+        model.addAttribute("tasks", tasks);
+        model.addAttribute("zone", ZoneId.of(user.getTimezone()));
         return "tasks/list";
     }
 
     @GetMapping("/new")
-    public String getAllNew(Model model) {
-        model.addAttribute("tasks", taskService.findAllDone(false));
+    public String getAllNew(Model model, HttpServletRequest request) {
+        User user = (User) request.getSession().getAttribute("user");
+        List<Task> tasks = taskService.findAllDone(false);
+        tasks.forEach(task -> setTime(task, user));
+        model.addAttribute("tasks", tasks);
+        model.addAttribute("zone", ZoneId.of(user.getTimezone()));
         return "tasks/list";
     }
 
@@ -59,12 +83,14 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public String getById(Model model, @PathVariable int id) {
+    public String getById(Model model, @PathVariable int id, HttpServletRequest request) {
         Optional<Task> task = taskService.findById(id);
         if (task.isEmpty()) {
             model.addAttribute("message", "Задача с указанным идентификатором не найдена");
             return "errors/404";
         }
+        User user = (User) request.getSession().getAttribute("user");
+        model.addAttribute("zone", ZoneId.of(user.getTimezone()));
         model.addAttribute("task", task.get());
         return "tasks/one";
     }

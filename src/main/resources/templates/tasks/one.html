@@ -54,7 +54,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="created" class="form-label"><b>Дата создания:</b></label>
-                        <div id="created" name="created" th:text="${#temporals.format(task.created, 'dd.MM.yyyy HH:mm - EEEE')}"></div>
+                        <div id="created" name="created" th:text="${#temporals.format(task.created.atZone(zone), 'dd.MM.yyyy HH:mm O')}"></div>
                     </div>
                     <div class="mb-3">
                         <label for="priority" class="form-label"><b>Приоритет:</b></label>
